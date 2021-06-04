@@ -266,15 +266,34 @@ CUSTOMER newCustomer(void)
 //	printf("Enter the ordered value:");
 //	scanf("%f", &customer.Value);
 	
+	
+	while(1)
+	{
 	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
 	scanf("%d/%d/%d",&customer.date.day,&customer.date.month,&customer.date.year);
-//	scanf("%d",&customer.date.day);
-//	printf("\b/");
-//	scanf("%d",&customer.date.month);
-//	printf("\b/");
-//	scanf("%d",&customer.date.year);
+	if(customer.date.day>31){
+		printf("\aThere is no more than 31 days in a month!\n");
+		continue;
+	}
+	else if(customer.date.month>12){
+		printf("\aThere is no more than 12 month in a year!\n");
+		continue;
+	}
+	else if(customer.date.year<1920){
+		printf("\aYour date looks old-fashioned!\n");
+		continue;
+	}
+	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
+		printf("Write date in one string with format dd/mm/yyyy!\n\a");
+		continue;		
+	}
+	else
+		break;
+	}
 	return customer;
 }
+
+
 
 CUSTOMER anonimizedCustomer(void)
 {	
