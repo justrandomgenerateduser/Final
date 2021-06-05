@@ -537,112 +537,112 @@ void marketing(char *filename, PRODUCTO pL[],int pC){
 	system("cls");
 }
 
-void subscribsion(char *filename, PRODUCTO pL[],int pC)
-{
-	DATE d1,d2;
-	
-	float sumP,sumGF,sumPf,sumPP;
-	float sum[4];
-	int i;
-	CUSTOMER marketingInfo;
-	system("cls");
-	
-	FILE *fp=NULL;	
-	fp = fopen(filename,"rb");
-		if (fp == NULL)
-	{
-		printf("File open ERROR");
-		getch();
-		exit(1);	
-	}
-
-	while(1)
-	{
-	printf("Enter the 1st date:\nFORMAT dd/mm/yyyy\n");
-	scanf("%d/%d/%d",&d1.day,&d1.month,&d1.year);te.year);
-	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
-	scanf("%d/%d/%d",&d2.day,&d2.month,&d2.year);
-	if(d1.day>31||d2.day>31){
-		printf("\aThere is no more than 31 days in a month!\n");
-		continue;
-	}
-	else if(d1.month>12){
-		printf("\aThere is no more than 12 month in a year!\n");
-		continue;
-	}
-	else if(customer.date.year<1920){
-		printf("\aYour date looks old-fashioned!\n");
-		continue;
-	}
-	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
-		printf("Write date in one string with format dd/mm/yyyy!\n\a");
-		continue;		
-	}
-	else
-		break;
-	}
-	
-	while(1)
-	{
-	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
-	scanf("%d/%d/%d",&customer.date.day,&customer.date.month,&customer.date.year);
-	if(customer.date.day>31){
-		printf("\aThere is no more than 31 days in a month!\n");
-		continue;
-	}
-	else if(customer.date.month>12){
-		printf("\aThere is no more than 12 month in a year!\n");
-		continue;
-	}
-	else if(customer.date.year<1920){
-		printf("\aYour date looks old-fashioned!\n");
-		continue;
-	}
-	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
-		printf("Write date in one string with format dd/mm/yyyy!\n\a");
-		continue;		
-	}
-	else
-		break;
-	}
-	
-	while(fread(&marketingInfo, sizeof(CUSTOMER),1 , fp) != 0)
-
-	{
-		do
-		{
-			if(strcmp(marketingInfo.Produto.Name,pL[0].Name)==0)
-			{
-				sum[0]+=pL[0].Price*marketingInfo.Quantidade;	
-	
-			}
-			else if(strcmp(marketingInfo.Produto.Name,pL[1].Name)==0)
-			{
-				sum[1]+=pL[1].Price*marketingInfo.Quantidade;	
-	//			GF=productInfo.Name;
-			}
-			else if(strcmp(marketingInfo.Produto.Name,pL[2].Name)==0)
-			{
-				sum[2]+=pL[2].Price*marketingInfo.Quantidade;	
-	//			Pf=productInfo.Name;
-			}
-			else if(strcmp(marketingInfo.Produto.Name,pL[3].Name)==0)
-			{
-				sum[3]+=pL[3].Price*marketingInfo.Quantidade;	
-	//			PP=productInfo.Name;
-			}
-			d1.day++;
-			if(d1.day>31 && d1.month==1)
-			d1.day=1;d1.month++;
-			if(d1.month>12)
-			d1.month=1;d1.year++;
-		}while(d1.day!=d2.day && d1.month!=d2.month && d1.year!=d2.year);
-	}
-	for(i=0;i<pC;i++)
-	{
-		printf("%s | %.2f |%.2f\n",pL[i].Name,pL[i].Price,sum[i]);
-	}
-}
+//void subscribsion(char *filename, PRODUCTO pL[],int pC)
+//{
+//	DATE d1,d2;
+//	
+//	float sumP,sumGF,sumPf,sumPP;
+//	float sum[4];
+//	int i;
+//	CUSTOMER marketingInfo;
+//	system("cls");
+//	
+//	FILE *fp=NULL;	
+//	fp = fopen(filename,"rb");
+//		if (fp == NULL)
+//	{
+//		printf("File open ERROR");
+//		getch();
+//		exit(1);	
+//	}
+//
+//	while(1)
+//	{
+//	printf("Enter the 1st date:\nFORMAT dd/mm/yyyy\n");
+//	scanf("%d/%d/%d",&d1.day,&d1.month,&d1.year);te.year);
+//	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
+//	scanf("%d/%d/%d",&d2.day,&d2.month,&d2.year);
+//	if(d1.day>31||d2.day>31){
+//		printf("\aThere is no more than 31 days in a month!\n");
+//		continue;
+//	}
+//	else if(d1.month>12){
+//		printf("\aThere is no more than 12 month in a year!\n");
+//		continue;
+//	}
+//	else if(customer.date.year<1920){
+//		printf("\aYour date looks old-fashioned!\n");
+//		continue;
+//	}
+//	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
+//		printf("Write date in one string with format dd/mm/yyyy!\n\a");
+//		continue;		
+//	}
+//	else
+//		break;
+//	}
+//	
+//	while(1)
+//	{
+//	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
+//	scanf("%d/%d/%d",&customer.date.day,&customer.date.month,&customer.date.year);
+//	if(customer.date.day>31){
+//		printf("\aThere is no more than 31 days in a month!\n");
+//		continue;
+//	}
+//	else if(customer.date.month>12){
+//		printf("\aThere is no more than 12 month in a year!\n");
+//		continue;
+//	}
+//	else if(customer.date.year<1920){
+//		printf("\aYour date looks old-fashioned!\n");
+//		continue;
+//	}
+//	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
+//		printf("Write date in one string with format dd/mm/yyyy!\n\a");
+//		continue;		
+//	}
+//	else
+//		break;
+//	}
+//	
+//	while(fread(&marketingInfo, sizeof(CUSTOMER),1 , fp) != 0)
+//
+//	{
+//		do
+//		{
+//			if(strcmp(marketingInfo.Produto.Name,pL[0].Name)==0)
+//			{
+//				sum[0]+=pL[0].Price*marketingInfo.Quantidade;	
+//	
+//			}
+//			else if(strcmp(marketingInfo.Produto.Name,pL[1].Name)==0)
+//			{
+//				sum[1]+=pL[1].Price*marketingInfo.Quantidade;	
+//	//			GF=productInfo.Name;
+//			}
+//			else if(strcmp(marketingInfo.Produto.Name,pL[2].Name)==0)
+//			{
+//				sum[2]+=pL[2].Price*marketingInfo.Quantidade;	
+//	//			Pf=productInfo.Name;
+//			}
+//			else if(strcmp(marketingInfo.Produto.Name,pL[3].Name)==0)
+//			{
+//				sum[3]+=pL[3].Price*marketingInfo.Quantidade;	
+//	//			PP=productInfo.Name;
+//			}
+//			d1.day++;
+//			if(d1.day>31 && d1.month==1)
+//			d1.day=1;d1.month++;
+//			if(d1.month>12)
+//			d1.month=1;d1.year++;
+//		}while(d1.day!=d2.day && d1.month!=d2.month && d1.year!=d2.year);
+//	}
+//	for(i=0;i<pC;i++)
+//	{
+//		printf("%s | %.2f |%.2f\n",pL[i].Name,pL[i].Price,sum[i]);
+//	}
+//}
 
 
 int main(int argc, char *argv[]) 
