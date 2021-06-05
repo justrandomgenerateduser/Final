@@ -15,20 +15,14 @@ typedef struct {
 }PRODUCTO;
 
 
-	
-
-
 typedef struct {
-	/* TODO (#1#): USE STRUCT */
+	/* DONE (#1#): USE STRUCT */
 	PRODUCTO Produto;
 	char Nome[50];
 	char ID_cliente[50];	
 	char telephone[20];
 	int Quantidade; //int is not too small?
 	float Value;
-//	int day; this also destroyed whole save
-//	int month;
-//	int year;
 	DATE date;
 }CUSTOMER;
 
@@ -54,21 +48,11 @@ void createFile(char *FileName)
 	fclose(fp);
 }
 
-int menu_product(void)
-{
-	int option;
-	printf("\nSelect product from menu below:\n");
-	printf("1 - Premium\n2 - GoldFunds\n3-Premium funds\n4 - PremiumPlus");
-	printf("\nSelection:");
-	scanf("%d",&option);
-	return option;
-}
+
 
 PRODUCTO newProduct(void)
 {
 	PRODUCTO product;
-	
-	
 	system("cls");
 	
 	fflush(stdin);
@@ -143,75 +127,63 @@ int insertProduct(char* Name)
 		strcpy(Premium_Plus.Name,"Premium Plus");
 		Premium_Plus.Price = 20;
 		
-	if(strcmp(info.Produto.Name,Premium.Name))
+	if(strcmp(info.Produto.Name,Premium.Name)==0)
 		return Premium.Price;
-	else if(strcmp(info.Produto.Name,Gold_funds.Name))
+	else if(strcmp(info.Produto.Name,Gold_funds.Name)==0)
 		return Gold_funds.Price;
-	else if(strcmp(info.Produto.Name,Premium_funds.Name))
+	else if(strcmp(info.Produto.Name,Premium_funds.Name)==0)
 		return Premium_funds.Price;	
-	else if(strcmp(info.Produto.Name,Premium_Plus.Name))
+	else if(strcmp(info.Produto.Name,Premium_Plus.Name)==0)
 		return Premium_Plus.Price;		
 }
 
 PRODUCTO insertProducts(char *filename)
-{
+{	
 	FILE *fp = NULL;
 	
-	PRODUCTO Premium;
-		strcpy(Premium.Name,"Premium");
-		Premium.Price = 5;
-	
-	PRODUCTO Gold_funds;
-		strcpy(Gold_funds.Name,"Gold funds");
-		Gold_funds.Price = 10;
-
-	PRODUCTO Premium_funds;
-		strcpy(Premium_funds.Name,"Premium funds");
-		Premium_funds.Price = 15;
-	PRODUCTO Premium_Plus;
-		strcpy(Premium_Plus.Name,"Premium Plus");
-		Premium_Plus.Price = 20;
-		
-	fp = fopen(filename, "ab+");
+	fp = fopen(filename, "rb");
 	if (fp == NULL)
 	{
-		printf("File open ERROR\a");
-		getch();
-		exit(1);	
+		fp = fopen(filename, "wb");
+		if(fp == NULL)
+		{
+			printf("File open ERROR\a");
+			getch();
+			exit(1);
+		}
+		else
+		{
+			PRODUCTO Premium;
+			strcpy(Premium.Name,"Premium");
+				Premium.Price = 5;
+	
+			PRODUCTO Gold_funds;
+				strcpy(Gold_funds.Name,"Gold funds");
+				Gold_funds.Price = 10;
+		
+			PRODUCTO Premium_funds;
+				strcpy(Premium_funds.Name,"Premium funds");
+				Premium_funds.Price = 15;
+				
+			PRODUCTO Premium_Plus;
+				strcpy(Premium_Plus.Name,"Premium Plus");
+				Premium_Plus.Price = 20;
+		
+
+			fwrite(&Premium, sizeof(PRODUCTO), 1, fp);
+			fwrite(&Gold_funds, sizeof(PRODUCTO), 1, fp);
+			fwrite(&Premium_funds, sizeof(PRODUCTO), 1, fp);
+			fwrite(&Premium_Plus, sizeof(PRODUCTO), 1, fp);
+			fclose(fp);
+		}
+	
 	}
 	
-	fseek(fp, 0L, SEEK_END);
-	fwrite(&Premium, sizeof(PRODUCTO), 1, fp);
-	fwrite(&Gold_funds, sizeof(PRODUCTO), 1, fp);
-	fwrite(&Premium_funds, sizeof(PRODUCTO), 1, fp);
-	fwrite(&Premium_Plus, sizeof(PRODUCTO), 1, fp);
-	fclose(fp);
+	
+
 //	return Premium,Gold_funds,Premium_funds,Premium_Plus;
 }
 
-char* product_t(char *product_type)
-{
-	int op;
-	do{
-		op=menu_product();
-	{
-		switch(op)
-	{
-//		product_type
-		case 1: strcpy(product_type,"Premium");
-		break;
-		case 2: strcpy(product_type,"Gold funds");
-		break;
-		case 3: strcpy(product_type,"Premium funds");
-		break;
-		case 4: strcpy(product_type,"Premium Plus");
-		break;
-		default: break;
-	}
-	}
-	}while(op=! 'x');
-	return product_type;
-}
 
 float total(char *product,char *filename)
 {	
@@ -232,14 +204,10 @@ float total(char *product,char *filename)
 }
 
 
-CUSTOMER newCustomer(void)
+CUSTOMER newCustomer(PRODUCTO pList[], int pCount)
 {
-//	char XD[50];
-	
 	CUSTOMER customer;
-//	DATE date;
-	char XD[20];
-	
+	int op,i;	
 	system("cls");
 	
 	fflush(stdin);
@@ -251,9 +219,19 @@ CUSTOMER newCustomer(void)
 	gets(customer.Nome);
 	
 	printf("Choose ordered product:");
-//	gets(customer.Produto);
+	
+	printf("\nSelect product from menu below:\n");
 
-	strcpy(customer.Produto.Name,product_t(customer.Produto.Name));
+	printf("Selection:\n");
+	for(i = 0;i<pCount;i++)
+	{
+		printf("%d - Name: %s Price:%.2f\n",i+1,pList[i].Name,pList[i].Price);
+	}
+	scanf("%d",&op);
+	strcpy(customer.Produto.Name,pList[op-1].Name);
+	customer.Produto.Price=pList[op-1].Price;
+
+//	strcpy(customer.Produto.Name,product_t(customer.Produto.Name));
 
 //	printf("%s\n",customer.Produto);
 	fflush(stdin);
@@ -315,23 +293,7 @@ CUSTOMER anonimizedCustomer(void)
 
 //char date(int day,int month,int year)
 //{	
-//	char date[10];
-//	
-////	char* chDay[2] = day+'0';
-////	char* chMonth[2] = month+'0';
-////	char* chYear[4] = year='0';
-//////	char aux3[10];
-//	
-//	if(day>31)
-//		return -1;
-//	else if(month>12)
-//		return -1;
-//	else
-//		return 0;
-//	
-//	date = strcat(chDay,chMonth);
-//	date = strcat(date,chYear);
-//}
+
 
 void anonimize(char *file_to_be_opened,char *file_to_be_written)
 {
@@ -366,7 +328,7 @@ void anonimize(char *file_to_be_opened,char *file_to_be_written)
 }
 
 
-void saveCustomerToFile(char *filename)
+void saveCustomerToFile(char *filename,PRODUCTO pL[], int pC)
 {	
 	FILE *fp = NULL;
 	CUSTOMER customer, customerFromFile;
@@ -382,7 +344,7 @@ void saveCustomerToFile(char *filename)
 		exit(1);	
 	}
 	
-	customer = newCustomer();
+	customer = newCustomer(pL,pC);
 	while(fread(&customerFromFile, sizeof(CUSTOMER),1 , fp) != 0 )
 	{
 		if (strcmp(customerFromFile.ID_cliente,customer.ID_cliente)==0 ) //why it is not working
@@ -446,7 +408,7 @@ int menu_marketing(void)
 
 void printCustomer(CUSTOMER oneCustomer)
 {
-	float value;
+	oneCustomer.Value=oneCustomer.Quantidade*oneCustomer.Produto.Price;
 //	strcmp(one)
 	printf("\nCustomer ID: %s\n", oneCustomer.ID_cliente);
 	printf("Customer name: %s\n", oneCustomer.Nome);
@@ -454,7 +416,7 @@ void printCustomer(CUSTOMER oneCustomer)
 	printf("Product amount: %d\n", oneCustomer.Quantidade);
 	printf("Phone number: %s\n", oneCustomer.telephone);
 	printf("Date: %d/%d/%d\n",oneCustomer.date.day,oneCustomer.date.month,oneCustomer.date.year);
-	printf("Value: %.2f\n", value=oneCustomer.Quantidade*insertProduct(oneCustomer.Produto.Name));
+	printf("Value: %.2f\n", oneCustomer.Value);
 //	printf("Date: %d/%d/%d",oneCustomer.date.day,oneCustomer.date.month,oneCustomer.date.year);
 }
 
@@ -464,7 +426,6 @@ void listAllCustomers(char *filename, char *filename1)
 	system("cls");
 	FILE *fp = NULL;
 	CUSTOMER customerFromFile;
-	insertProducts(filename1);
 	
 	fp = fopen(filename, "rb");
 	if (fp == NULL)
@@ -518,30 +479,12 @@ void listAllProducts(char *filename)
 
 
 
-void marketing(char *filename, char *filename1){
+void marketing(char *filename, PRODUCTO pL[],int pC){
 		system("cls");
 	float sumP,sumGF,sumPf,sumPP;
-//	char* P[20],GF[20],Pf[20],PP[20];
-	
-	
-	PRODUCTO Premium;
-		strcpy(Premium.Name,"Premium");
-		Premium.Price = 5;
-	
-	PRODUCTO Gold_funds;
-		strcpy(Gold_funds.Name,"Gold funds");
-		Gold_funds.Price = 10;
-
-	PRODUCTO Premium_funds;
-		strcpy(Premium_funds.Name,"Premium funds");
-		Premium_funds.Price = 15;
-	PRODUCTO Premium_Plus;
-		strcpy(Premium_Plus.Name,"Premium Plus");
-		Premium_Plus.Price = 20;
-
-	
-	CUSTOMER marketingInfo,randomhuj;
-	PRODUCTO productInfo;
+	float sum[4];
+	int i;
+	CUSTOMER marketingInfo;
 	
 	FILE *fp=NULL;	
 	fp = fopen(filename,"rb");
@@ -551,83 +494,196 @@ void marketing(char *filename, char *filename1){
 		getch();
 		exit(1);	
 	}
-	FILE *fp1=NULL;
-	fp1 = fopen(filename1,"rb");
-		if (fp1 == NULL)
-	{
-		printf("File open ERROR");
-		getch();
-		exit(1);	
-	}
-	
-	fread(&productInfo,sizeof(PRODUCTO),1,fp1);
-//	fread(&randomhuj, sizeof(CUSTOMER),1, fp);
-	//&& fread(&productInfo, sizeof(PRODUCTO),1 , fp) != 0 
+
 	while(fread(&marketingInfo, sizeof(CUSTOMER),1 , fp) != 0)
-	
-	/* DONE (#1#): Problem with data comparison, same with 
-	               password function? */
+
 	{
-		/* TODO (#1#): POPRAWIÆ TUTAJ */
-//		&&strcmp(productInfo.Name,"Premium")
-		if(strcmp(marketingInfo.Produto.Name,Premium.Name)==0)
+
+		
+		if(strcmp(marketingInfo.Produto.Name,pL[0].Name)==0)
 		{
-			sumP+=productInfo.Price*marketingInfo.Quantidade;	
-//			P = &productInfo.Name;
-//			strcpy(P,productInfo.Name);
+			sum[0]+=pL[0].Price*marketingInfo.Quantidade;	
+
 		}
-		else if(strcmp(marketingInfo.Produto.Name,Gold_funds.Name)==0)
+		else if(strcmp(marketingInfo.Produto.Name,pL[1].Name)==0)
 		{
-			sumGF+=productInfo.Price*marketingInfo.Quantidade;	
+			sum[1]+=pL[1].Price*marketingInfo.Quantidade;	
 //			GF=productInfo.Name;
 		}
-		else if(strcmp(marketingInfo.Produto.Name,Premium_funds.Name)==0)
+		else if(strcmp(marketingInfo.Produto.Name,pL[2].Name)==0)
 		{
-			sumPf+=productInfo.Price*marketingInfo.Quantidade;	
+			sum[2]+=pL[2].Price*marketingInfo.Quantidade;	
 //			Pf=productInfo.Name;
 		}
-		else if(strcmp(marketingInfo.Produto.Name,Premium_Plus.Name))
+		else if(strcmp(marketingInfo.Produto.Name,pL[3].Name)==0)
 		{
-			sumPP+=productInfo.Price*marketingInfo.Quantidade;	
+			sum[3]+=pL[3].Price*marketingInfo.Quantidade;	
 //			PP=productInfo.Name;
 		}
 		
 	}
-	printf("%s | %.2f |%.2f\n",Premium.Name,Premium.Price,sumP);
-	printf("%s | %.2f\n",Gold_funds.Name,sumGF);
-	printf("%s |%.2f\n",Premium_funds.Name,sumPf);
-	printf("%s | %.2f",Premium_Plus.Name,sumPP);
+	for(i=0;i<pC;i++)
+	{
+		printf("%s | %.2f |%.2f\n",pL[i].Name,pL[i].Price,sum[i]);
+	}
+
+//	printf("%s | %.2f |%.2f\n",pL[1].Name,Premium.Price,sumP);
+//	printf("%s | %.2f\n",Gold_funds.Name,sumGF);
+//	printf("%s |%.2f\n",Premium_funds.Name,sumPf);
+//	printf("%s | %.2f",Premium_Plus.Name,sumPP);
 //	printf("%.2f",sumGF);
 	fclose(fp);
 	getch();
 	system("cls");
 }
 
+void subscribsion(char *filename, PRODUCTO pL[],int pC)
+{
+	DATE d1,d2;
+	
+	float sumP,sumGF,sumPf,sumPP;
+	float sum[4];
+	int i;
+	CUSTOMER marketingInfo;
+	system("cls");
+	
+	FILE *fp=NULL;	
+	fp = fopen(filename,"rb");
+		if (fp == NULL)
+	{
+		printf("File open ERROR");
+		getch();
+		exit(1);	
+	}
+
+	while(1)
+	{
+	printf("Enter the 1st date:\nFORMAT dd/mm/yyyy\n");
+	scanf("%d/%d/%d",&d1.day,&d1.month,&d1.year);te.year);
+	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
+	scanf("%d/%d/%d",&d2.day,&d2.month,&d2.year);
+	if(d1.day>31||d2.day>31){
+		printf("\aThere is no more than 31 days in a month!\n");
+		continue;
+	}
+	else if(d1.month>12){
+		printf("\aThere is no more than 12 month in a year!\n");
+		continue;
+	}
+	else if(customer.date.year<1920){
+		printf("\aYour date looks old-fashioned!\n");
+		continue;
+	}
+	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
+		printf("Write date in one string with format dd/mm/yyyy!\n\a");
+		continue;		
+	}
+	else
+		break;
+	}
+	
+	while(1)
+	{
+	printf("Enter the order date:\nFORMAT dd/mm/yyyy\n");
+	scanf("%d/%d/%d",&customer.date.day,&customer.date.month,&customer.date.year);
+	if(customer.date.day>31){
+		printf("\aThere is no more than 31 days in a month!\n");
+		continue;
+	}
+	else if(customer.date.month>12){
+		printf("\aThere is no more than 12 month in a year!\n");
+		continue;
+	}
+	else if(customer.date.year<1920){
+		printf("\aYour date looks old-fashioned!\n");
+		continue;
+	}
+	else if(customer.date.day==0||customer.date.month==0||customer.date.year==0){
+		printf("Write date in one string with format dd/mm/yyyy!\n\a");
+		continue;		
+	}
+	else
+		break;
+	}
+	
+	while(fread(&marketingInfo, sizeof(CUSTOMER),1 , fp) != 0)
+
+	{
+		do
+		{
+			if(strcmp(marketingInfo.Produto.Name,pL[0].Name)==0)
+			{
+				sum[0]+=pL[0].Price*marketingInfo.Quantidade;	
+	
+			}
+			else if(strcmp(marketingInfo.Produto.Name,pL[1].Name)==0)
+			{
+				sum[1]+=pL[1].Price*marketingInfo.Quantidade;	
+	//			GF=productInfo.Name;
+			}
+			else if(strcmp(marketingInfo.Produto.Name,pL[2].Name)==0)
+			{
+				sum[2]+=pL[2].Price*marketingInfo.Quantidade;	
+	//			Pf=productInfo.Name;
+			}
+			else if(strcmp(marketingInfo.Produto.Name,pL[3].Name)==0)
+			{
+				sum[3]+=pL[3].Price*marketingInfo.Quantidade;	
+	//			PP=productInfo.Name;
+			}
+			d1.day++;
+			if(d1.day>31 && d1.month==1)
+			d1.day=1;d1.month++;
+			if(d1.month>12)
+			d1.month=1;d1.year++;
+		}while(d1.day!=d2.day && d1.month!=d2.month && d1.year!=d2.year);
+	}
+	for(i=0;i<pC;i++)
+	{
+		printf("%s | %.2f |%.2f\n",pL[i].Name,pL[i].Price,sum[i]);
+	}
+}
+
 
 int main(int argc, char *argv[]) 
 {	
-
+	PRODUCTO product_list[10];
+	int product_count=0,i;
+	FILE *fp;
+	
 
 	char op;
-	char customer_list[] = "customers.dat";
+	char customer_file[] = "customers.dat";
 	char file_to_be_aonimizied[]="Marketing.dat";
-	char product_list[] = "produtos.dat";
-	insertProducts(product_list);
+	char product_file[] = "produtos.dat";
+	
+	insertProducts(product_file);
 	/* TODO (#1#): ADD EXTENDED ASCII */
 	printf("%c%c%c%c%c\n",201,205,205,205,187);
-	printf("%c%c%c%c%c\n",186,' ',"JEEBAAAC",' ',186);
+	printf("%c%c%c%c%c\n",186,' ',"ss",' ',186);
 	printf("%c%c%c%c%c\n",200,205,205,205,188);
-	createFile(customer_list);
-	int number;
+
+// create a vector of products from file
+	fp = fopen (product_file, "rb");
+	if (fp != NULL)
+	{	
+		while(fread(&product_list[product_count],sizeof(PRODUCTO),1,fp)!=0 && product_count<10)
+		{
+			product_count++;
+		}
+		//when while finishes i have number of product
+	fclose(fp);
+	}
+	
 	do{
 		op = menu_main();
 		op = toupper(op);
 		
-		switch(op)
+		switch(op	)
 		{
 			case 'A': printf("Anonimize\n");
-				anonimize(customer_list,file_to_be_aonimizied);
-				listAllCustomers(file_to_be_aonimizied,product_list);
+				anonimize(customer_file,file_to_be_aonimizied);
+				listAllCustomers(file_to_be_aonimizied,product_file);
 				system("cls");
 				break;
 			case 'M': printf("Marketing\n");
@@ -636,15 +692,14 @@ int main(int argc, char *argv[])
 					op=(menu_marketing());
 					switch(op){
 						case 'l':printf("Product list");{
-							marketing(customer_list,product_list);
+							marketing(customer_file,product_list,product_count);
 							
 //							date(8,8,1998);
 							system("cls");
 							break;
 						}
 						case 'S':printf("Subscriptions\a");{
-//							saveCustomerToFile(customer_list);
-//							total("Premium",customer_list);
+
 							system("cls");
 							break;
 						}
@@ -666,19 +721,19 @@ int main(int argc, char *argv[])
 					op=(menu_root());
 					switch(op){
 						case 'l':printf("Customer List");{
-							listAllCustomers(customer_list,product_list);
+							listAllCustomers(customer_file,product_file);
 							break;
 						}
 						case 'a':printf("Add customer");{
-							saveCustomerToFile(customer_list);
+							saveCustomerToFile(customer_file,product_list,product_count);
 							break;
 						}
 						case 'p':printf("Product list");{
-							listAllProducts(product_list);
+							listAllProducts(product_file);
 							break;
 						}
 						case 'q':printf("Add product");{
-							saveProductToFile(product_list);
+							saveProductToFile(product_file);
 							break;
 						}
 						
